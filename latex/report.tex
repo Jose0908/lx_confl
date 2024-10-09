@@ -1,0 +1,73 @@
+\documentclass{llncs}
+
+\usepackage[]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{fullpage}
+\usepackage[usenames]{color}
+\usepackage[color]{coqdoc}
+\usepackage{url}
+\usepackage{makeidx,hyperref}
+\usepackage[all]{xy}
+
+\usepackage{mathpartir}
+\usepackage{tcolorbox}
+\usepackage{amsmath,amssymb}
+
+\newcommand{\vswap}[3]{(\!\!(#1\ #2)\!\!) #3}
+\newcommand{\swap}[3]{(#1\ #2) #3}
+%\newcommand{\msub}[2]{\{#1 / #2\}}
+\newcommand{\esub}[3]{[ #2 := #3 ] #1}
+\newcommand{\metasub}[3]{\{ #2 := #3 \}#1}
+
+\newcommand{\tto}{\twoheadrightarrow}
+\newcommand{\ott}{\twoheadleftarrow}
+
+\newcommand{\flavio}[1]{{\color{red}#1}}
+
+\begin{document}
+\title{Nominal Compositional Z Property in Coq}
+\author{José R. I. Soares 
+  \institute{Departamento de Ciência da Computação \\
+    Universidade de Brasília, Brasília, Brazil}
+  and
+  Flávio L. C. de Moura\thanks{Corresponding author}
+  \institute{Departamento de Ciência da Computação \\
+    Universidade de Brasília, Brasília, Brazil \\
+  {\tt jose.soares@aluno.unb.br, flaviomoura@unb.br}}}
+
+\maketitle
+
+\begin{abstract}
+  TBD
+\end{abstract}
+
+\section{Introduction}
+
+This work is about the development of a framework for studying calculi with explicit substitutions in a nominal setting\cite{gabbayNewApproachAbstract2002}, \emph{i.e.} an approach to abstract syntax where bound names and $\alpha$-equivalence are invariant with respect to permuting names. It extends the previous work \cite{fmm2021} and \cite{limaFormalizedExtensionSubstitution2023} as follows: we formalized the confluence proof of a calculus with explicit substitution via the compositional Z property following the steps of \cite{nakazawaCompositionalConfluenceProofs2016}. In our framework, variables are represented by atoms that are structureless entities with a decidable equality, where different names mean different atoms and different variables. Its syntax is close to the usual paper and pencil notation used in $\lambda$-calculus, whose grammar of terms is given by:
+
+\begin{equation}\label{lambda:grammar}
+ t ::= x \mid \lambda_x.t \mid t\ t
+\end{equation}
+
+\noindent where $x$ represents a variable which is taken from an enumerable set, $\lambda_x.t$ is an abstraction, and $t\ t$ is an application. The abstraction is the only binding operator: in the expression $\lambda_x.t$, $x$ binds in $t$, called the scope of the abstraction. This means that all free occurrence of $x$ in $t$ is bound in $\lambda_x.t$. A variable that is not in the scope of an abstraction is free. A variable in a term is either bound or free, but note that a varible can occur both bound and free in a term, as in $(\lambda_y. y)\ y$. The main rule of the $\lambda$-calculus, named $\beta$-reduction, is given by:
+
+\begin{equation}\label{lambda:beta}
+ (\lambda_x.t)\ u \to_{\beta} \metasub{t}{x}{u}
+\end{equation}
+\noindent where $\metasub{t}{x}{u}$ represents the result of substituting all free occurrences of variable $x$ in $t$ with $u$ in such a way that renaming of bound variable may be done in order to avoid the variable capture of free variables. The substitution $\metasub{t}{x}{u}$ is called \emph{metasubstitution}.
+
+In a calculus with explicit substitution the grammar (\ref{lambda:grammar}) is extended with a constructor that aims to simulate the metasubstitution.
+\include{infra_nom.v}
+%\include{ZtoConfl_nom.v}
+\include{lx_nom.v}
+
+\section{Conclusion}
+
+We presented the general structure of a framework that extends the work of \cite{fmm2021} and \cite{limaFormalizedExtensionSubstitution2023} for studying generic calculi with explicit substitutions using the nominal approach. All proofs are constructive, with no reliance on the classical axioms. Specifically, we applies this framework to prove the confluence of the $\lambda_x$-calculus through the compositional Z property, following the method in \cite{nakazawaCompositionalConfluenceProofs2016}.
+
+For future work, we plan to use this framework to study additional calculi with explicit substitutions, such as those in \cite{nakazawaPropertyShufflingCalculus2023,kesnerTheoryExplicitSubstitutions2009a,nakazawaCallbyvalue2017,hondaConfluenceProofsLambdaMuCalculi2021}.
+
+\bibliographystyle{plain}
+\bibliography{report} 
+\end{document}
